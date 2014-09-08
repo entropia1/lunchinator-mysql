@@ -1,0 +1,12 @@
+[Core]
+Name = corny.lunchinator.db_MySQL
+Module = db_MySQL
+
+[Documentation]
+Author = Cornelius Ratsch
+Version = 0.1
+Website = http://www.lunchinator.de
+Description = Enables Lunchinator to connect to MySQL databases.
+
+[Requirements]
+pip = MySQL-python>=1.1.2
