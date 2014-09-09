@@ -2,7 +2,6 @@ from lunchinator.plugin import iface_db_plugin, lunch_db
 import sys, sqlite3, threading, Queue, datetime, os
 from lunchinator import get_server, get_settings, convert_raw
 from db_SQLite.multithreaded_sqlite import MultiThreadSQLite
-import mysql.connector
  
 class db_MySQL(iface_db_plugin):
     def __init__(self):
@@ -32,6 +31,7 @@ class _MySQLDB(lunch_db):
         self.options = options
         
     def open(self, _logger):
+        import mysql.connector
         self._cnx = mysql.connector.connect(host=self.options[u"host"],
                                             user=self.options[u"user"],
                                             password=self.options[u"pass"],
