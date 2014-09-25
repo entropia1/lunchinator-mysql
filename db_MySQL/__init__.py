@@ -1,23 +1,24 @@
 from lunchinator.plugin import iface_db_plugin, lunch_db
 import sys, sqlite3, threading, Queue, datetime, os
 from lunchinator import get_server, get_settings, convert_raw
+from lunchinator.plugin.iface_plugins import PasswordOption
 from db_SQLite.multithreaded_sqlite import MultiThreadSQLite
- 
+
 class db_MySQL(iface_db_plugin):
     def __init__(self):
         super(db_MySQL, self).__init__()
         self.options=[((u"host", u"Host"), ""),
                       ((u"user", u"Username"), ""),
-                      ((u"pass", u"Password"), ""),
+                      ((u"pass", u"Password"), PasswordOption),
                       ((u"db", u"Database"), "")]
         
     def get_displayed_name(self):
         return u"MySQL Connection"
         
-    def create_connection(self, options):
+    def create_connection(self, connName, options):
         newconn = None
         try:
-            db = _MySQLDB(options)
+            db = _MySQLDB(self, connName, options)
             db.open(self.logger)
             return db
         except:
@@ -27,14 +28,15 @@ class db_MySQL(iface_db_plugin):
         return newconn
 
 class _MySQLDB(lunch_db):
-    def __init__(self, options):
+    def __init__(self, dbPlugin, connName, options):
+        super(_MySQLDB, self).__init__(dbPlugin, connName)
         self.options = options
         
     def open(self, _logger):
         import mysql.connector
         self._cnx = mysql.connector.connect(host=self.options[u"host"],
                                             user=self.options[u"user"],
-                                            password=self.options[u"pass"],
+                                            password=self._getPasswordForOption(u"pass"),
                                             database=self.options[u"db"])
         self.is_open = True
         
